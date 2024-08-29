@@ -13,6 +13,7 @@
 
 # Kass, J. M., Muscarella, R., Galante, P. J., Bohl, C. L., Pinilla‐Buitrago, G. E., Boria, R. A., ... & Anderson, R. P. (2021). ENMeval 2.0: Redesigned for customizable 
 # and reproducible modeling of species’ niches and distributions. Methods in Ecology and Evolution, 12(9), 1602-1608.
+
 # Cobos, M. E., Peterson, A. T., Barve, N., & Osorio-Olvera, L. (2019). kuenm: an R package for detailed development of ecological niche models using Maxent. PeerJ, 7, e6281.
 # Note: Jamie's package can work with 'kuenm' package for evaluating different choices of hyperparameters and paritioning methods using AICc
 # Source: https://jamiemkass.github.io/ENMeval/articles/ENMeval-2.0-vignette.html
@@ -208,20 +209,21 @@ for (i in 1:length(spplist)) {
 maxent_end <- Sys.time()
 
 
-set.seed(4)
-maxent_start <- Sys.time()
+# Test on the speed of the 2nd species because it has much smaller range
+#set.seed(4)
+#maxent_start <- Sys.time()
 
   
-  me_i <-  ENMevaluate(occs = occs_list[[2]][, 1:2], bg = bgs_list[[2]][, 1:2], envs = feature_list[[2]],
-                       algorithm = 'maxent.jar', partitions = 'randomkfold',
-                       categoricals = "dominant_land_cover", 
-                       tune.args = list(fc = c("LQ"), rm = 1:10)
-  )
+  #me_i <-  ENMevaluate(occs = occs_list[[2]][, 1:2], bg = bgs_list[[2]][, 1:2], envs = feature_list[[2]],
+  #                     algorithm = 'maxent.jar', partitions = 'randomkfold',
+  #                     categoricals = "dominant_land_cover", 
+  #                     tune.args = list(fc = c("LQ"), rm = 1:10)
+  #)
   
-  # Save ith maxent object for making figures or extracting coefficients
-  maxent_list_1st[[2]] <- me_i
+  ## Save ith maxent object for making figures or extracting coefficients
+  #maxent_list_1st[[2]] <- me_i
   
-maxent_end <- Sys.time()
+#maxent_end <- Sys.time()
 
 #######################################################################################################################################
 # Record of the most running logs to track how much time this process needs
@@ -268,7 +270,8 @@ maxent_end <- Sys.time()
 # ENMevaluate completed in 4 minutes 11.4 seconds.
 
 
-
+# 08/29/2024
+# Note: Part2 can be ignored because the best model was determined by best continous Boyce Index, best AUC, and the lowest AICc
 #######################################################################################################################################
 # Part2. Extract 'MaxEnt' objects with the 0 delta.AICc, best auc.val.avg, and lowest AICc
 #######################################################################################################################################
@@ -357,7 +360,7 @@ ped2_2 <- predict(maxent_highest_cbi, feature_list[[2]])  # studyArea is the cli
 plot(feature_all$bio1, col = "grey", legend=FALSE, ext=extent(feature_list[[2]]$bio1), main = "Best CBI")
 # plot the continuous prediction
 plot(ped2_2, add = TRUE)
-
+#######################################################################################################################################
 
 # Prepare future layers by cropping future layers with calibration area raster
 stack_1 <- c()
@@ -647,17 +650,19 @@ for (i in 1:length(occlist)) {
   
 }
 
+
+
 # Species 1
-lowest_aic <- eval.results(maxent_list_1st[[1]]) %>%
-  filter(delta.AICc == 0)
+#lowest_aic <- eval.results(maxent_list_1st[[1]]) %>%
+#  filter(delta.AICc == 0)
 
-highest_cbi <- eval.results(maxent_list_1st[[1]]) %>%
-  filter(cbi.val.avg == max(cbi.val.avg))
+#highest_cbi <- eval.results(maxent_list_1st[[1]]) %>%
+#  filter(cbi.val.avg == max(cbi.val.avg))
 
-maxent_lowest_aic <- eval.models(maxent_list_1st[[1]])[[lowest_aic$tune.args]]
+#maxent_lowest_aic <- eval.models(maxent_list_1st[[1]])[[lowest_aic$tune.args]]
 
 
-maxent_highest_cbi <- eval.models(maxent_list_1st[[1]])[[highest_cbi$tune.args]]
+#maxent_highest_cbi <- eval.models(maxent_list_1st[[1]])[[highest_cbi$tune.args]]
 
 
 
